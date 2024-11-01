@@ -132,6 +132,32 @@ public class ProjectStepDefinitions {
                 .contentType("application/json")
                 .delete(BASE_URL + "/" + projectId);
     }
+    @When("user requests to create a task within project {int} with title {string}")
+    public void user_requests_create_task_with_title(int project_id, String title) {
+        List<String> idList = RestAssured.get(BASE_URL).jsonPath().getList("projects.id");
+        String body = String.format("{\"title\": \"%s\"}", title);
+        response = RestAssured.given()
+                .contentType("application/json")
+                .body(body)
+                .post(BASE_URL + "/" + idList.get(0) + "/tasks");
+    }
+    @When("user requests to create a task within project {int} with title {string} and description {string}")
+    public void user_requests_create_task_with_title_and_description(int project_id, String title, String description) {
+        List<String> idList = RestAssured.get(BASE_URL).jsonPath().getList("projects.id");
+        String body = String.format("{\"title\": \"%s\", \"description\": \"%s\"}", title, description);
+        response = RestAssured.given()
+                .contentType("application/json")
+                .body(body)
+                .post(BASE_URL + "/" + idList.get(0) + "/tasks");
+    }
+    @When("user requests to create task for nonexistent project {int}")
+    public void user_requests_create_task_for_nonexistent_project(int project_id) {
+        String body = "{\"title\": \"never_created\"}";
+        response = RestAssured.given()
+                .contentType("application/json")
+                .body(body)
+                .post(BASE_URL + "/" + project_id + "/tasks");
+    }
     @Then("a list of all projects in the system and its details should be displayed")
     public void a_list_of_all_projects_in_the_system_and_its_details_should_be_displayed() {
         List<Map<String, Object>> projects = response.jsonPath().getList("projects.id");
@@ -140,12 +166,12 @@ public class ProjectStepDefinitions {
     @Then("an empty list of projects should be displayed")
     public void an_empty_list_of_projects_should_be_displayed(){
         List<Map<String, Object>> projects = response.jsonPath().getList("projects.id");
-        assertTrue("Expected list of projects, but got none.", projects.isEmpty());
+        assertTrue("Expected empty list, but list not empty.", projects.isEmpty());
     }
     @Then("the details of project with id {string} should be displayed")
     public void the_details_of_project_with_id_should_be_displayed(String projectId) {
         List<Map<String, Object>> projects = response.jsonPath().getList("projects.id");
-        assertFalse("Expected list of projects, but got none.", projects.isEmpty());
+        assertFalse("Expected project, but got none.", projects.isEmpty());
     }
     @Then("an {string} message is displayed")
     public void a_specific_message_is_displayed(String message) {
@@ -175,6 +201,18 @@ public class ProjectStepDefinitions {
     @Then("project {int} should be deleted from the system")
     public void project_is_deleted_from_system(int project_id) {
         assertEquals("", response.asString());
+    }
+    @Then("a new task with title {string} should be created")
+    public void a_new_task_with_title_created(String title) {
+        String taskTitle = response.jsonPath().getString("title");
+        assertEquals(title, taskTitle);
+    }
+    @Then("a new task with title {string} and description {string} should be created")
+    public void a_new_task_with_title_and_description_created(String title, String description) {
+        String taskTitle = response.jsonPath().getString("title");
+        String taskDescription = response.jsonPath().getString("description");
+        assertEquals(title, taskTitle);
+        assertEquals(description, taskDescription);
     }
     @Then("an error message is displayed")
     public void an_error_message_is_displayed() {
