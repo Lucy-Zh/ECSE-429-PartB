@@ -49,11 +49,11 @@ Given the following projects exist in the system:
   | 2          | project2 | true      | false  |               |
   | 3          | project3 | false     | true   | i like this   |
   | 4          | project4 | false     | false  | cool project  |
-When user requests to create project with request body "<invalid_request_body>"
+When user requests to create project with request body "<INVALID_REQUEST_BODY>"
 Then an error message is displayed
 And the response status code should be 400
     Examples:
-    | invalid_request_body |
+    | INVALID_REQUEST_BODY |
     | {                    |
     | {title}              |
     | {title:              |

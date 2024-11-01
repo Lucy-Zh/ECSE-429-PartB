@@ -79,6 +79,38 @@ public class ProjectStepDefinitions {
                 .body(request_body)
                 .post(BASE_URL);
     }
+    @When("user requests to edit project {int} with new title {string}")
+    public void user_requests_edit_project_with_new_title(int project_id, String new_title) {
+        List<String> idList = RestAssured.get(BASE_URL).jsonPath().getList("projects.id");
+        String request_body = String.format("{\"title\": \"%s\"}", new_title);
+        response = RestAssured.given()
+                .contentType("application/json")
+                .body(request_body)
+                .post(BASE_URL + "/" + idList.get(0));
+    }
+    @When("user requests to edit project {int} with new completed status {string}")
+    public void user_requests_edit_project_with_new_completed_status(int project_id, String new_complete_status) {
+        List<String> idList = RestAssured.get(BASE_URL).jsonPath().getList("projects.id");
+        String request_body = String.format("{\"completed\": %s}", new_complete_status);
+        response = RestAssured.given()
+                .contentType("application/json")
+                .body(request_body)
+                .post(BASE_URL + "/" + idList.get(0));
+    }
+    @When("user requests to edit project with {int}")
+    public void user_requests_edit_project_with_nonexistent_project(int nonexistent_project_id) {
+        response = RestAssured.given()
+                .contentType("application/json")
+                .post(BASE_URL + "/" + nonexistent_project_id);
+    }
+    @When("user requests to edit project with request body {string}")
+    public void user_requests_edit_project_with_invalid_request_body(String invalid_request_body) {
+        List<String> idList = RestAssured.get(BASE_URL).jsonPath().getList("projects.id");
+        response = RestAssured.given()
+                .contentType("application/json")
+                .body(invalid_request_body)
+                .post(BASE_URL + "/" + idList.get(0));
+    }
     @Then("a list of all projects in the system and its details should be displayed")
     public void a_list_of_all_projects_in_the_system_and_its_details_should_be_displayed() {
         List<Map<String, Object>> projects = response.jsonPath().getList("projects.id");
@@ -108,6 +140,16 @@ public class ProjectStepDefinitions {
     public void a_new_project_without_title_should_be_created_in_the_system() {
         String projectTitle = response.jsonPath().getString("title");
         assertEquals("", projectTitle);
+    }
+    @Then("the title of project {int} should be updated to {string}")
+    public void title_of_project_updated(int project_id, String new_title) {
+        String projectTitle = response.jsonPath().getString("title");
+        assertEquals(new_title, projectTitle);
+    }
+    @Then("the completed status of project {int} should be updated to {string}")
+    public void complete_status_of_project_updated(int project_id, String new_complete_status) {
+        String projectTitle = response.jsonPath().getString("completed");
+        assertEquals(new_complete_status, projectTitle);
     }
     @Then("an error message is displayed")
     public void an_error_message_is_displayed() {
