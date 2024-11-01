@@ -50,7 +50,8 @@ public class ProjectStepDefinitions {
     @When("user requests to retrieve a specific project with id {string}")
     public void user_requests_to_retrieve_a_specific_project_with_id(String projectId) {
         response = RestAssured.get(BASE_URL);
-        response = RestAssured.get(BASE_URL + "/" + response.jsonPath().getList("projects.id").get(0));
+        response = RestAssured.get(BASE_URL + "/" + response.jsonPath().getList("projects.id")
+                .get(Integer.parseInt(projectId)));
     }
     @When("user requests to retrieve project with project id {int}")
     public void user_requests_to_retrieve_a_specific_project_with_id_does_not_exist(int id) {
@@ -111,6 +112,26 @@ public class ProjectStepDefinitions {
                 .body(invalid_request_body)
                 .post(BASE_URL + "/" + idList.get(0));
     }
+    @When("user requests to delete project {int}")
+    public void user_requests_delete_project_with_id(int projectId) {
+        List<String> idList = RestAssured.get(BASE_URL).jsonPath().getList("projects.id");
+        response = RestAssured.given()
+                .contentType("application/json")
+                .delete(BASE_URL + "/" + idList.get(projectId));
+    }
+    @When("user requests to delete project {int} with no title")
+    public void user_requests_delete_project_with_no_title(int projectId) {
+        List<String> idList = RestAssured.get(BASE_URL).jsonPath().getList("projects.findAll { it.title == \"null\" }.id");
+        response = RestAssured.given()
+                .contentType("application/json")
+                .delete(BASE_URL + "/" + idList.get(0));
+    }
+    @When("user requests to delete nonexistent project {int}")
+    public void user_requests_delete_nonexistent_project(int projectId) {
+        response = RestAssured.given()
+                .contentType("application/json")
+                .delete(BASE_URL + "/" + projectId);
+    }
     @Then("a list of all projects in the system and its details should be displayed")
     public void a_list_of_all_projects_in_the_system_and_its_details_should_be_displayed() {
         List<Map<String, Object>> projects = response.jsonPath().getList("projects.id");
@@ -150,6 +171,10 @@ public class ProjectStepDefinitions {
     public void complete_status_of_project_updated(int project_id, String new_complete_status) {
         String projectTitle = response.jsonPath().getString("completed");
         assertEquals(new_complete_status, projectTitle);
+    }
+    @Then("project {int} should be deleted from the system")
+    public void project_is_deleted_from_system(int project_id) {
+        assertEquals("", response.asString());
     }
     @Then("an error message is displayed")
     public void an_error_message_is_displayed() {
