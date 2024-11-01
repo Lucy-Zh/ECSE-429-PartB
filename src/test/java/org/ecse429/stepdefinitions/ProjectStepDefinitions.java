@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 import java.util.List;
 import java.util.Map;
 
-public class GetProjectsStepDefinitions {
+public class ProjectStepDefinitions {
 
     private static final String BASE_URL = "http://localhost:4567/projects";
     private Response response;
@@ -56,6 +56,29 @@ public class GetProjectsStepDefinitions {
     public void user_requests_to_retrieve_a_specific_project_with_id_does_not_exist(int id) {
         response = RestAssured.get(BASE_URL + "/" + id);
     }
+    @When("user requests to create a new project with title {string}")
+    public void user_requests_create_new_project_with_title(String title) {
+        String body = String.format("{\"title\": \"%s\"}", title);
+        response = RestAssured.given()
+                .contentType("application/json")
+                .body(body)
+                .post(BASE_URL);
+    }
+    @When("user requests to create a new project without title")
+    public void user_requests_create_new_project_without_title() {
+        String body = "{}";
+        response = RestAssured.given()
+                .contentType("application/json")
+                .body(body)
+                .post(BASE_URL);
+    }
+    @When("user requests to create project with request body {string}")
+    public void user_requests_create_new_project_with_request_body(String request_body) {
+        response = RestAssured.given()
+                .contentType("application/json")
+                .body(request_body)
+                .post(BASE_URL);
+    }
     @Then("a list of all projects in the system and its details should be displayed")
     public void a_list_of_all_projects_in_the_system_and_its_details_should_be_displayed() {
         List<Map<String, Object>> projects = response.jsonPath().getList("projects.id");
@@ -75,6 +98,20 @@ public class GetProjectsStepDefinitions {
     public void a_specific_message_is_displayed(String message) {
         String actualError = (String) response.jsonPath().getList("errorMessages").get(0);
         assertEquals(message, actualError);
+    }
+    @Then("a new project with title {string} should be created in the system")
+    public void a_new_project_with_title_should_be_created_in_the_system(String title) {
+        String projectTitle = response.jsonPath().getString("title");
+        assertEquals(title, projectTitle);
+    }
+    @Then("a new project with an empty value for title should be created in the system")
+    public void a_new_project_without_title_should_be_created_in_the_system() {
+        String projectTitle = response.jsonPath().getString("title");
+        assertEquals("", projectTitle);
+    }
+    @Then("an error message is displayed")
+    public void an_error_message_is_displayed() {
+        assertFalse(response.jsonPath().getList("errorMessages").isEmpty());
     }
     @Then("the response status code should be {int}")
     public void the_response_status_code_should_be(int expectedStatusCode) {
