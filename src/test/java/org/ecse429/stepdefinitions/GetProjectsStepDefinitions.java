@@ -47,14 +47,14 @@ public class GetProjectsStepDefinitions {
     public void user_requests_to_retrieve_all_projects() {
         response = RestAssured.get(BASE_URL);
     }
-    @When("user requests to retrieve a specific project with id <project_id>")
-    public void user_requests_to_retrieve_a_specific_project_with_id() {
+    @When("user requests to retrieve a specific project with id {string}")
+    public void user_requests_to_retrieve_a_specific_project_with_id(String projectId) {
         response = RestAssured.get(BASE_URL);
         response = RestAssured.get(BASE_URL + "/" + response.jsonPath().getList("projects.id").get(0));
     }
-    @When("user requests to retrieve project with project id NONEXISTENT_PROJECT_ID")
-    public void user_requests_to_retrieve_a_specific_project_with_id_does_not_exist() {
-        response = RestAssured.get(BASE_URL + "/" + 0); // id is never 0 so always nonexistent
+    @When("user requests to retrieve project with project id {int}")
+    public void user_requests_to_retrieve_a_specific_project_with_id_does_not_exist(int id) {
+        response = RestAssured.get(BASE_URL + "/" + id);
     }
     @Then("a list of all projects in the system and its details should be displayed")
     public void a_list_of_all_projects_in_the_system_and_its_details_should_be_displayed() {
@@ -66,8 +66,8 @@ public class GetProjectsStepDefinitions {
         List<Map<String, Object>> projects = response.jsonPath().getList("projects.id");
         assertTrue("Expected list of projects, but got none.", projects.isEmpty());
     }
-    @Then("the details of project with id <project_id> should be displayed")
-    public void the_details_of_project_with_id_should_be_displayed() {
+    @Then("the details of project with id {string} should be displayed")
+    public void the_details_of_project_with_id_should_be_displayed(String projectId) {
         List<Map<String, Object>> projects = response.jsonPath().getList("projects.id");
         assertFalse("Expected list of projects, but got none.", projects.isEmpty());
     }
