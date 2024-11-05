@@ -18,14 +18,7 @@ public class TodosStepDefinitions {
     public TodosStepDefinitions(ResponseContext responseContext) {
         this.responseContext = responseContext;
     }
-   // private Response response;
 
-    // todo: move to a shared file to be used by project and todos step definitions
-//    @Given("the REST API To-Do List Manager application is running")
-//    public void the_rest_api_to_do_list_manager_application_is_running() {
-//        RestAssured.baseURI = BASE_URL;
-//        response = null;
-//    }
     @Given("the following todos exist in the system:")
     public void the_following_todos_exist_in_the_system(io.cucumber.datatable.DataTable dataTable) {
         // create a predefined set of todos

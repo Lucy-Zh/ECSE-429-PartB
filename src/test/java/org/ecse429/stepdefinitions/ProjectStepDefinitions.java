@@ -19,13 +19,7 @@ public class ProjectStepDefinitions {
     public ProjectStepDefinitions(ResponseContext responseContext) {
         this.responseContext = responseContext;
     }
-//    private Response response;
 
-//    @Given("the REST API To-Do List Manager application is running")
-//    public void the_rest_api_to_do_list_manager_application_is_running() {
-//        RestAssured.baseURI = BASE_URL;
-//        response = null;
-//    }
     @Given("the following projects exist in the system:")
     public void the_following_projects_exist_in_the_system(io.cucumber.datatable.DataTable dataTable) {
         List<Map<String, String>> projects = dataTable.asMaps(String.class, String.class);
@@ -237,12 +231,4 @@ public class ProjectStepDefinitions {
         assertEquals(title, taskTitle);
         assertEquals(description, taskDescription);
     }
-//    @Then("an error message is displayed")
-//    public void an_error_message_is_displayed() {
-//        assertFalse(response.jsonPath().getList("errorMessages").isEmpty());
-//    }
-//    @Then("the response status code should be {int}")
-//    public void the_response_status_code_should_be(int expectedStatusCode) {
-//        assertEquals("Expected status code to match.", expectedStatusCode, response.getStatusCode());
-//    }
 }
