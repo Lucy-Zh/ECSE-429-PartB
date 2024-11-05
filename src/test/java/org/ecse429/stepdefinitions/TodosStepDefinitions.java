@@ -53,6 +53,33 @@ public class TodosStepDefinitions {
         Response response = RestAssured.get(BASE_URL + "/" + todoId);
         responseContext.setResponse(response);
     }
+
+  @When("user requests to create a new todo with title {string}")
+  public void user_requests_create_new_todo_with_title(String title) {
+        String body = String.format("{\"title\": \"%s\"}", title);
+        Response response = RestAssured.given()
+                .contentType("application/json")
+                .body(body)
+                .post(BASE_URL);
+        responseContext.setResponse(response);
+    }
+    @When("user requests to create a new todo without title")
+    public void user_requests_create_new_todo_without_title() {
+        String body = "{}";
+        Response response = RestAssured.given()
+                .contentType("application/json")
+                .body(body)
+                .post(BASE_URL);
+        responseContext.setResponse(response);
+    }
+    @When("user requests to create todo with doneStatus {string}")
+    public void user_requests_create_new_todo_with_done_status(String done_Status) {
+        Response response = RestAssured.given()
+                .contentType("application/json")
+                .body(done_Status)
+                .post(BASE_URL);
+        responseContext.setResponse(response);
+    }
     @Then("the todos list returned should contain {int} items")
     public void the_response_should_contain(int expectedCount) {
         List<Map<String, Object>> todosList = responseContext.getResponse().jsonPath().getList("$");
@@ -62,5 +89,15 @@ public class TodosStepDefinitions {
     public void the_response_should_contain(String expectedTitle) {
       List<String> titles = responseContext.getResponse().jsonPath().getList("title");
       assertTrue(titles.contains(expectedTitle));
+    }
+    @Then("a new todo with title {string} should be created in the system")
+    public void a_new_todo_with_title_should_be_created_in_the_system(String title) {
+        String todoTitle = responseContext.getResponse().jsonPath().getString("title");
+        assertEquals(title, todoTitle);
+    }
+    @Then("a new todo with an empty value for title should be created in the system")
+    public void a_new_todo_without_title_should_be_created_in_the_system() {
+        String todoTitle = responseContext.getResponse().jsonPath().getString("title");
+        assertEquals("", todoTitle);
     }
 }
