@@ -26,7 +26,7 @@ And the response status code should be 201
   | 1          | test3 |
   | 1          | test4 |
 
-Scenario Outline: RCreate task for a specific project with a specific title and specific description (Alternate Flow)
+Scenario Outline: Create task for a specific project with a specific title and specific description (Alternate Flow)
 
 Given the following projects exist in the system:
   | title    | completed | active | description   |

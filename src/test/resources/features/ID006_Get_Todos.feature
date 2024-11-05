@@ -1,7 +1,7 @@
 Feature: Get Todos
 
 As a REST API To-Do List Manager user
-I want to retrieve all instances of todos
+I want to retrieve todos
 So that I can view what tasks I need to accomplish
 
 Background:

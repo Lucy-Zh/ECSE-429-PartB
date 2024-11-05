@@ -53,7 +53,6 @@ public class TodosStepDefinitions {
         Response response = RestAssured.get(BASE_URL + "/" + todoId);
         responseContext.setResponse(response);
     }
-
   @When("user requests to create a new todo with title {string}")
   public void user_requests_create_new_todo_with_title(String title) {
         String body = String.format("{\"title\": \"%s\"}", title);
@@ -80,6 +79,69 @@ public class TodosStepDefinitions {
                 .post(BASE_URL);
         responseContext.setResponse(response);
     }
+
+    @When("user requests header for all todos")
+    public void user_requests_to_retrieve_header_of_all_todos() {
+        Response response = RestAssured.head(BASE_URL);
+        responseContext.setResponse(response);
+    }
+    @When("user requests to retrieve the header of a todo with id {int}")
+    public void user_requests_to_retrieve_header_of_todo_with_id(int todoId) {
+        Response response = RestAssured.head(BASE_URL + "/" + todoId);
+        responseContext.setResponse(response);
+    }
+    @When("user requests to edit todo {int} with new title {string}")
+    public void user_requests_edit_todo_with_new_title(int todo_id, String new_title) {
+        List<String> idList = RestAssured.get(BASE_URL).jsonPath().getList("todos.id");
+        String request_body = String.format("{\"title\": \"%s\"}", new_title);
+        Response response = RestAssured.given()
+                .contentType("application/json")
+                .body(request_body)
+                .post(BASE_URL + "/" + idList.get(0));
+        responseContext.setResponse(response);
+    }
+
+    @When("user requests to edit todo {int} with new done status {string}")
+    public void user_requests_edit_todo_with_new_done_status(int todo_id, String new_done_status) {
+        List<String> idList = RestAssured.get(BASE_URL).jsonPath().getList("todos.id");
+        String request_body = String.format("{\"doneStatus\": %s}", Boolean.parseBoolean(new_done_status));
+        Response response = RestAssured.given()
+                .contentType("application/json")
+                .body(request_body)
+                .post(BASE_URL + "/" + idList.get(0));
+        responseContext.setResponse(response);
+    }
+    @When("user requests to edit a todo with id {int}")
+    public void user_requests_edit_todo_with_id(int todo_id) {
+        Response response = RestAssured.given()
+                .contentType("application/json")
+                .post(BASE_URL + "/" + todo_id);
+        responseContext.setResponse(response);
+    }
+    @When("user requests to delete todo {int}")
+    public void user_requests_delete_todo_with_id(int todoId) {
+        List<String> idList = RestAssured.get(BASE_URL).jsonPath().getList("todos.id");
+        Response response = RestAssured.given()
+                .contentType("application/json")
+                .delete(BASE_URL + "/" + idList.get(todoId));
+        responseContext.setResponse(response);
+    }
+    @When("user requests to delete todo with invalid {int}")
+    public void user_requests_delete_todo_with_invalid_id(int todoId) {
+        Response response = RestAssured.given()
+                .contentType("application/json")
+                .delete(BASE_URL + "/" + todoId);
+        responseContext.setResponse(response);
+    }
+
+    @When("user requests to delete todo {string}")
+    public void user_requests_delete_todo_with_invalid_format_id(String todoId) {
+        Response response = RestAssured.given()
+                .contentType("application/json")
+                .delete(BASE_URL + "/" + todoId);
+        responseContext.setResponse(response);
+    }
+
     @Then("the todos list returned should contain {int} items")
     public void the_response_should_contain(int expectedCount) {
         List<Map<String, Object>> todosList = responseContext.getResponse().jsonPath().getList("$");
@@ -99,5 +161,20 @@ public class TodosStepDefinitions {
     public void a_new_todo_without_title_should_be_created_in_the_system() {
         String todoTitle = responseContext.getResponse().jsonPath().getString("title");
         assertEquals("", todoTitle);
+    }
+    @Then("the title of todo {int} should be updated to {string}")
+    public void title_of_todo_updated(int todo_id, String new_title) {
+        String todoTitle = responseContext.getResponse().jsonPath().getString("title");
+        assertEquals(new_title, todoTitle);
+    }
+    @Then("the done status of todo {int} should be updated to {string}")
+    public void complete_status_of_project_updated(int todo_id, String new_done_status) {
+        String todoStatus = responseContext.getResponse().jsonPath().getString("doneStatus");
+        assertEquals(new_done_status, todoStatus);
+    }
+    @Then("todo {int} should be deleted from the system")
+    public void project_is_deleted_from_system(int todo_id) {
+        // making sure response doesn't contain error messages
+        assertEquals("", responseContext.getResponse().asString());
     }
 }

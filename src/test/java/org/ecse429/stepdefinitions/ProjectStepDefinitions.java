@@ -212,8 +212,8 @@ public class ProjectStepDefinitions {
     }
     @Then("the completed status of project {int} should be updated to {string}")
     public void complete_status_of_project_updated(int project_id, String new_complete_status) {
-        String projectTitle = responseContext.getResponse().jsonPath().getString("completed");
-        assertEquals(new_complete_status, projectTitle);
+        String status = responseContext.getResponse().jsonPath().getString("completed");
+        assertEquals(new_complete_status, status);
     }
     @Then("project {int} should be deleted from the system")
     public void project_is_deleted_from_system(int project_id) {

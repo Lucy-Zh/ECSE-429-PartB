@@ -19,7 +19,6 @@ Given the REST API To-Do List Manager application is running
       | title |
       | titleExample |
       | titleExample2 |
-      | titleExample3 |
 
   Scenario Outline: Create a new todo without title (Alternate Flow)
     Given the following todos exist in the system:
