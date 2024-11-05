@@ -20,8 +20,7 @@ public class CommonStepDefinitions {
   @Given("the REST API To-Do List Manager application is running")
   public void the_rest_api_to_do_list_manager_application_is_running() {
     RestAssured.baseURI = BASE_URL;
-    Response response = responseContext.getResponse();
-    response = null;
+    responseContext.setResponse(null);
   }
 
   @Then("an error message is displayed")

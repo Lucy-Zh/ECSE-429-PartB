@@ -9,9 +9,9 @@ Feature: Retrieve Todos' headers
 
   Scenario Outline: Request header for all todos (Normal Flow)
     Given the following todos exist in the system:
-      | id | title            | doneStatus | description |
-      | 1  | scan paperwork   | false      |             |
-      | 2  | file paperwork   | false      |             |
+      | id | title          | doneStatus | description |
+      | 1  | scan paperwork | false      |             |
+      | 2  | file paperwork | false      |             |
     When user requests header for all todos
     Then the response status code should be 200
     Examples:
@@ -24,9 +24,9 @@ Feature: Retrieve Todos' headers
 
   Scenario Outline: Retrieve a todo that does not exist (Error Flow)
     Given the following todos exist in the system:
-      | id | title            | doneStatus | description |
-      | 1  | scan paperwork   | false      |             |
-      | 2  | file paperwork   | false      |             |
+      | id | title          | doneStatus | description |
+      | 1  | scan paperwork | false      |             |
+      | 2  | file paperwork | false      |             |
     When user requests to retrieve the header of a todo with id <NONEXISTENT_TODO_ID>
     And the response status code should be 404
     Examples:

@@ -9,23 +9,23 @@ Feature: Delete Todos
 
   Scenario Outline: Delete a specific to-do item (Normal Flow)
     Given the following todos exist in the system:
-      | id | title            | doneStatus | description |
-      | 1  | scan paperwork   | false      |             |
-      | 2  | file paperwork   | false      |             |
-      | 3  | buy supplies     | false      |             |
+      | id | title          | doneStatus | description |
+      | 1  | scan paperwork | false      |             |
+      | 2  | file paperwork | false      |             |
+      | 3  | buy supplies   | false      |             |
     When user requests to delete todo <todo_id>
     Then todo <todo_id> should be deleted from the system
     And the response status code should be 200
     Examples:
       | todo_id |
-      | 1          |
-      | 2          |
+      | 1       |
+      | 2       |
 
   Scenario Outline: Delete an nonexistent todo (Alternate Flow)
     Given the following todos exist in the system:
-      | id | title            | doneStatus | description |
-      | 1  | scan paperwork   | false      |             |
-      | 2  | file paperwork   | false      |             |
+      | id | title          | doneStatus | description |
+      | 1  | scan paperwork | false      |             |
+      | 2  | file paperwork | false      |             |
     When user requests to delete todo with invalid <NONEXISTENT_TODO_ID>
     Then an error message is displayed
     And the response status code should be 404
@@ -37,9 +37,9 @@ Feature: Delete Todos
 
   Scenario Outline: Delete a todo with invalid data format (Error Flow)
     Given the following todos exist in the system:
-      | id | title            | doneStatus | description |
-      | 1  | scan paperwork   | false      |             |
-      | 2  | file paperwork   | false      |             |
+      | id | title          | doneStatus | description |
+      | 1  | scan paperwork | false      |             |
+      | 2  | file paperwork | false      |             |
     When user requests to delete todo "<INVALID_TODO_ID>"
     Then an error message is displayed
     And the response status code should be 404
